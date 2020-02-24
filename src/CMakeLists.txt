@@ -1,5 +1,3 @@
-add_executable(ccipher-bin ccipher.c)
+add_executable(ccipher ccipher.c)
 
-target_link_libraries(ccipher-bin PRIVATE ccipher)
-set_target_properties(ccipher-bin
-        PROPERTIES OUTPUT_NAME ccipher)
+target_link_libraries(ccipher PRIVATE libccipher)

@@ -1,4 +1,4 @@
-#include "ccipher/ccipher.h"
+#include "libccipher/ccipher.h"
 
 #include <stdio.h>
 

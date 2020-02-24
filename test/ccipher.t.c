@@ -1,5 +1,5 @@
 #include <unity.h>
-#include <ccipher/ccipher.h>
+#include <libccipher/ccipher.h>
 
 void setUp() {}
 void tearDown() {}

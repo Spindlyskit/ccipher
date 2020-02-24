@@ -9,4 +9,4 @@ FetchContent_MakeAvailable(unity)
 add_executable(ccipher-test ccipher.t.c)
 
 # Link with libccipher and unity
-target_link_libraries(ccipher-test PRIVATE ccipher unity)
+target_link_libraries(ccipher-test PRIVATE libccipher unity)
