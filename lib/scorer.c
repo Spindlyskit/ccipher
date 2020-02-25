@@ -2,8 +2,21 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "libccipher/logging.h"
+
+int get_ngram_index(const char *ngram, int length)
+{
+	int idx = 0, digit = 1;
+
+	for (int i = length - 1; i >= 0; i--) {
+		idx += (ngram[i] - 'A') * digit;
+		digit *= 26;
+	}
+
+	return idx;
+}
 
 void scorer_load_data(struct text_scorer *scorer, FILE *quadgram_file)
 {
@@ -28,5 +41,16 @@ void scorer_load_data(struct text_scorer *scorer, FILE *quadgram_file)
 
 float scorer_quadgram_score(struct text_scorer *scorer, char *text)
 {
-	return 0;
+	unsigned long len = strlen(text);
+	if (len < 4) {
+		log_error("Cannot quadgram score text \"%s\" of length %d", text, len);
+		return 0.0f;
+	}
+
+	float total = 0.0f;
+	for (int i = 0; i < len - 3; i++) {
+		total += scorer->quadgrams[get_ngram_index(text + i, 4)];
+	}
+
+	return total;
 }

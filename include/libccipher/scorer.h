@@ -9,6 +9,10 @@ struct text_scorer {
 	float quadgrams[QUADGRAM_LENGTH];
 };
 
+// Get the index of an ngram of n length in a sorted array
+// The behaviour is undefined if the length of ngram < n, or the characters aren't {A..Z}
+int get_ngram_index(const char *ngram, int length);
+
 // Load quadgram data from a given file
 void scorer_load_data(struct text_scorer *scorer, FILE *quadgram_file);
 
