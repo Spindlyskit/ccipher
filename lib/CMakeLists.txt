@@ -1,4 +1,4 @@
-add_library(libccipher libccipher.c ../include/libccipher/ccipher.h logging.c ../include/libccipher/logging.h scorer.c
+add_library(libccipher libccipher.c ../include/libccipher/libccipher.h logging.c ../include/libccipher/logging.h scorer.c
         ../include/libccipher/scorer.h)
 
 target_include_directories(libccipher PUBLIC ../include)

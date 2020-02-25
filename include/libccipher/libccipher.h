@@ -1,0 +1,6 @@
+#ifndef CCIPHER_LIBCCIPHER_H
+#define CCIPHER_LIBCCIPHER_H
+
+int hello(void);
+
+#endif //CCIPHER_LIBCCIPHER_H

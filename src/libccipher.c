@@ -1,4 +1,4 @@
-#include <libccipher/ccipher.h>
+#include <libccipher/libccipher.h>
 #include <libccipher/logging.h>
 
 int main(void) {
