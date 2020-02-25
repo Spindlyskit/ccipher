@@ -4,7 +4,7 @@
 void setUp() {}
 void tearDown() {}
 
-void get_ngram_index_should_return_index(void)
+void test_get_ngram_index(void)
 {
 	// Test monograms
 	char *test_string = "SUBSTITUTE";
@@ -18,22 +18,38 @@ void get_ngram_index_should_return_index(void)
 	TEST_ASSERT_EQUAL_INT(456975, get_ngram_index("ZZZZ", 4));
 }
 
-void load_quadgrams_should_load_quadgrams(void)
+void test_load_quadgrams(void)
 {
 	struct text_scorer scorer;
-
 	scorer_load_data(&scorer, fopen("./english_quadgrams.txt", "r"));
 
-	// The expected values are more precise than floats, so they should be made shorter
-	TEST_ASSERT_EQUAL_FLOAT(-5.799338278530059, scorer.quadgrams[0]);
-	TEST_ASSERT_EQUAL_FLOAT(-7.34470369346995, scorer.quadgrams[3167]);
-	TEST_ASSERT_EQUAL_FLOAT(-6.781259884971996, scorer.quadgrams[QUADGRAM_LENGTH - 1]);
+	TEST_ASSERT_EQUAL_FLOAT(-5.79933, scorer.quadgrams[0]);
+	TEST_ASSERT_EQUAL_FLOAT(-7.34470, scorer.quadgrams[3167]);
+	TEST_ASSERT_EQUAL_FLOAT(-6.78125, scorer.quadgrams[QUADGRAM_LENGTH - 1]);
+}
+
+void test_scorer_quadgram_score(void)
+{
+	// Load the test data
+	struct text_scorer scorer;
+	scorer_load_data(&scorer, fopen("./english_quadgrams.txt", "r"));
+
+	// Test scoring single quadgrams
+	TEST_ASSERT_EQUAL_FLOAT(-4.034544, scorer_quadgram_score(&scorer, "APPL"));
+	TEST_ASSERT_EQUAL_FLOAT(-5.179962, scorer_quadgram_score(&scorer, "AULS"));
+
+	// Test scoring actual text
+	char *string_1 = "WENEEDAWAYOFDETERMININGIFAPIECEOFTEXTISVERYSIMILARTOENGLISHTHISISACHIEVEDBYCOUNTINGQUADGRAMS";
+	char *string_2 = "AASJHAFKJHDSJKGFUAKSHDJASHGBCHJXCGYXZFCYZXGVJKZXKBVGZJXHVGZJKXBCHJZBCJBDCHJZBCJXVBHJZXBJKZXV";
+	TEST_ASSERT_EQUAL_FLOAT(-389.3947, scorer_quadgram_score(&scorer, string_1));
+	TEST_ASSERT_EQUAL_FLOAT(-887.977, scorer_quadgram_score(&scorer, string_2));
 }
 
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(get_ngram_index_should_return_index);
-	RUN_TEST(load_quadgrams_should_load_quadgrams);
+	RUN_TEST(test_get_ngram_index);
+	RUN_TEST(test_load_quadgrams);
+	RUN_TEST(test_scorer_quadgram_score);
 	return UNITY_END();
 }
