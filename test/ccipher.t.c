@@ -1,5 +1,7 @@
 #include <unity.h>
+#include <string.h>
 #include <libccipher/scorer.h>
+#include <libccipher/ciphers/caesar.h>
 
 void setUp() {}
 void tearDown() {}
@@ -45,11 +47,20 @@ void test_scorer_quadgram_score(void)
 	TEST_ASSERT_EQUAL_FLOAT(-887.977, scorer_quadgram_score(&scorer, string_2));
 }
 
+void test_cipher_caesar_solve(void)
+{
+	char text[] = "AOPZ PZ H JHLZHY JPWOLY";
+	caesar_solve(19, text);
+
+	TEST_ASSERT_EQUAL_STRING("THIS IS A CAESAR CIPHER", text);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_get_ngram_index);
 	RUN_TEST(test_load_quadgrams);
 	RUN_TEST(test_scorer_quadgram_score);
+	RUN_TEST(test_cipher_caesar_solve);
 	return UNITY_END();
 }
