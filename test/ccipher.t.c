@@ -55,6 +55,29 @@ void test_cipher_caesar_solve(void)
 	TEST_ASSERT_EQUAL_STRING("THIS IS A CAESAR CIPHER", text);
 }
 
+void test_cipher_caesar_crack(void)
+{
+	// Load the test data
+	struct text_scorer scorer;
+	scorer_load_data(&scorer, fopen("./english_quadgrams.txt", "r"));
+
+	char text[] = "AOPZ PZ H JHLZHY JPWOLY";
+	unsigned int used_key = caesar_crack(&scorer, text);
+
+	TEST_ASSERT_EQUAL_STRING("THIS IS A CAESAR CIPHER", text);
+	TEST_ASSERT_EQUAL_UINT(19, used_key);
+
+	char text2[] = "HZOCJY DI RCDXC ZVXC GZOOZM DI OCZ KGVDIOZSO DN MZKGVXZY WT V GZOOZM NJHZ ADSZY IPHWZM JA"
+		" KJNDODJIN YJRI OCZ VGKCVWZO OCZ HZOCJY DN IVHZY VAOZM EPGDPN XVZNVM RCJ PNZY DO DI CDN KMDQVOZ XJMMZNKJIYZIXZ";
+
+	used_key = caesar_crack(&scorer, text2);
+
+	TEST_ASSERT_EQUAL_STRING("METHOD IN WHICH EACH LETTER IN THE PLAINTEXT IS REPLACED BY A LETTER SOME FIXED NUMBER OF"
+		" POSITIONS DOWN THE ALPHABET THE METHOD IS NAMED AFTER JULIUS CAESAR WHO USED IT IN HIS PRIVATE CORRESPONDENCE",
+		text2);
+	TEST_ASSERT_EQUAL_UINT(5, used_key);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -62,5 +85,6 @@ int main(void)
 	RUN_TEST(test_load_quadgrams);
 	RUN_TEST(test_scorer_quadgram_score);
 	RUN_TEST(test_cipher_caesar_solve);
+	RUN_TEST(test_cipher_caesar_crack);
 	return UNITY_END();
 }

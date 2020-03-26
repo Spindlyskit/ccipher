@@ -1,6 +1,10 @@
+#include "libccipher/ciphers/caesar.h"
+
+#include <math.h>
+
 #include "libccipher/scorer.h"
 
-void caesar_solve(int key, char *text)
+void caesar_solve(unsigned int key, char *text)
 {
 	for (int i = 0; text[i] != '\0'; i++) {
 		char *c = text + i;
@@ -16,7 +20,21 @@ void caesar_solve(int key, char *text)
 	}
 }
 
-unsigned int *caesar_crack(struct text_scorer *scorer, char *text)
+unsigned int caesar_crack(struct text_scorer *scorer, char *text)
 {
-	return 0;
+	unsigned int best_key;
+	float best_score = -INFINITY;
+
+	for (unsigned int i = 1; i <= 26; i++) {
+		caesar_solve(1, text);
+		float score = scorer_quadgram_score(scorer, text);
+
+		if (score > best_score) {
+			best_key = i;
+			best_score = score;
+		}
+	}
+
+	caesar_solve(best_key, text);
+	return best_key;
 }
