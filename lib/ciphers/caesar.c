@@ -16,4 +16,7 @@ void caesar_solve(int key, char *text)
 	}
 }
 
-char *caesar_crack(struct text_scorer, char *text);
+unsigned int *caesar_crack(struct text_scorer *scorer, char *text)
+{
+	return 0;
+}

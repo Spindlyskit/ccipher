@@ -1,3 +1,5 @@
+set(CMAKE_C_STANDARD 11)
+
 # Grab Unity testing library
 FetchContent_Declare(
     unity
