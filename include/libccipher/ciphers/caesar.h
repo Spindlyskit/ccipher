@@ -1,10 +1,11 @@
 #ifndef CCIPHER_CAESAR_H
 #define CCIPHER_CAESAR_H
 
+#include <stdbool.h>
 #include <libccipher/scorer.h>
 
 // Parse a caesar key from a string
-unsigned int caesar_parse_key(char *text);
+bool caesar_parse_key(char *text, unsigned int *key);
 
 // Solve a caesar cipher with the given key
 void caesar_solve(unsigned int key, char *text);

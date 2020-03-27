@@ -1,8 +1,28 @@
 #include "libccipher/ciphers/caesar.h"
 
+#include <stdbool.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include <math.h>
 
 #include "libccipher/scorer.h"
+
+bool caesar_parse_key(char *text, unsigned int *key)
+{
+	for (char *c = text; *c != '\0'; c++) {
+		if (!isdigit(*c)) {
+			return false;
+		}
+	}
+
+	*key = strtoul(text, NULL, 10);
+
+	if (*key > 26) {
+		return false;
+	}
+
+	return true;
+}
 
 void caesar_solve(unsigned int key, char *text)
 {

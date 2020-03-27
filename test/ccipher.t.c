@@ -1,3 +1,5 @@
+#include <stdbool.h>
+#include <stdlib.h>
 #include <unity.h>
 #include <string.h>
 #include <libccipher/scorer.h>
@@ -47,6 +49,29 @@ void test_scorer_quadgram_score(void)
 	TEST_ASSERT_EQUAL_FLOAT(-887.977, scorer_quadgram_score(&scorer, string_2));
 }
 
+void test_cipher_caesar_parse_key(void)
+{
+	char text[] = "Invalid key!";
+	char text2[] = "12";
+	char text3[] = "26";
+	char text4[] = "27";
+
+	unsigned int key = 0;
+	bool success;
+
+	TEST_ASSERT_EQUAL_INT(false, caesar_parse_key(text, &key));
+
+	success = caesar_parse_key(text2, &key);
+	TEST_ASSERT_EQUAL_INT(true, success);
+	TEST_ASSERT_EQUAL_UINT(12, key);
+
+	success = caesar_parse_key(text3, &key);
+	TEST_ASSERT_EQUAL_INT(true, success);
+	TEST_ASSERT_EQUAL_UINT(26, key);
+
+	TEST_ASSERT_EQUAL_INT(false, caesar_parse_key(text4, &key));
+}
+
 void test_cipher_caesar_solve(void)
 {
 	char text[] = "AOPZ PZ H JHLZHY JPWOLY";
@@ -84,6 +109,7 @@ int main(void)
 	RUN_TEST(test_get_ngram_index);
 	RUN_TEST(test_load_quadgrams);
 	RUN_TEST(test_scorer_quadgram_score);
+	RUN_TEST(test_cipher_caesar_parse_key);
 	RUN_TEST(test_cipher_caesar_solve);
 	RUN_TEST(test_cipher_caesar_crack);
 	return UNITY_END();
