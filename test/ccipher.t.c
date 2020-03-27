@@ -1,9 +1,9 @@
 #include <stdbool.h>
-#include <stdlib.h>
 #include <unity.h>
 #include <string.h>
 #include <libccipher/scorer.h>
 #include <libccipher/ciphers/caesar.h>
+#include <libccipher/ciphers/substitution.h>
 
 void setUp() {}
 void tearDown() {}
@@ -103,6 +103,15 @@ void test_cipher_caesar_crack(void)
 	TEST_ASSERT_EQUAL_UINT(5, used_key);
 }
 
+void test_cipher_substitution_solve(void)
+{
+	char text[] = "HELLO WORLD!";
+	char key[] = "ZGIMTQFCPXDBVUNRKEWHOSJYAL";
+
+	substitution_solve(key, text);
+	TEST_ASSERT_EQUAL_STRING("CTBBN JNEBM!", text);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -112,5 +121,6 @@ int main(void)
 	RUN_TEST(test_cipher_caesar_parse_key);
 	RUN_TEST(test_cipher_caesar_solve);
 	RUN_TEST(test_cipher_caesar_crack);
+	RUN_TEST(test_cipher_substitution_solve);
 	return UNITY_END();
 }
