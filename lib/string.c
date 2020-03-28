@@ -24,6 +24,8 @@ char *str_clean(char *string)
 	char *new = malloc(strlen(string) + 1);
 	int nl = 0;
 
+	// Push alphabetic characters to the new string, replacing all uppercase characters with a "u" and all lowercase
+	// with an "l", leaves other characters untouched without adding them to the new string
 	str_foreach(string) {
 		if (isupper(*string)) {
 			new[nl] = *string;
@@ -49,8 +51,10 @@ void str_repair(char *schema, char *string)
 	int c = 0;
 
 	str_foreach(schema) {
-		// the counter should never be out of range
-		if (c >= len) continue;
+		// If the counter is out of range, we have processed all necessary characters
+		if (c >= len) {
+			break;
+		}
 
 		if (*schema == 'u') {
 			*schema = toupper(string[c]);
