@@ -12,7 +12,10 @@ if(NOT unity_POPULATED)
     add_subdirectory(${unity_SOURCE_DIR} ${unity_BINARY_DIR})
 endif()
 
-add_executable(ccipher-test ccipher.t.c)
+add_executable(test_ccipher ccipher.t.c)
 
 # Link with libccipher and unity
-target_link_libraries(ccipher-test PRIVATE libccipher unity)
+target_link_libraries(test_ccipher PRIVATE libccipher unity)
+
+# Add as a test
+add_test(NAME test_ccipher COMMAND test_ccipher)

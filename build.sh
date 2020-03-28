@@ -7,7 +7,9 @@ cp -r assets/* build/test
 cd build
 
 # Configure
-cmake -DCODE_COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug ..
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+# Build
+cmake --build . --config Debug -- -j "$(nproc)"
+# Test
 cd test
-make
-./ccipher-test
+./test_ccipher
