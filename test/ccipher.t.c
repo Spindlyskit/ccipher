@@ -1,7 +1,9 @@
 #include <stdbool.h>
+#include <stdlib.h>
 #include <unity.h>
 #include <string.h>
 #include <libccipher/scorer.h>
+#include <libccipher/string.h>
 #include <libccipher/ciphers/caesar.h>
 #include <libccipher/ciphers/substitution.h>
 
@@ -47,6 +49,34 @@ void test_scorer_quadgram_score(void)
 	char *string_2 = "AASJHAFKJHDSJKGFUAKSHDJASHGBCHJXCGYXZFCYZXGVJKZXKBVGZJXHVGZJKXBCHJZBCJBDCHJZBCJXVBHJZXBJKZXV";
 	TEST_ASSERT_EQUAL_FLOAT(-389.3947, scorer_quadgram_score(&scorer, string_1));
 	TEST_ASSERT_EQUAL_FLOAT(-887.977, scorer_quadgram_score(&scorer, string_2));
+}
+
+void test_string_case_change(void)
+{
+	char string[] = "Hello, World!";
+	char string2[] = "GoodBye World.";
+
+	str_upper(string);
+	str_lower(string2);
+
+	TEST_ASSERT_EQUAL_STRING("HELLO, WORLD!", string);
+	TEST_ASSERT_EQUAL_STRING("goodbye world.", string2);
+}
+
+void test_string_schema(void)
+{
+	char string[] = "Hello, wOrld";
+
+	char *new = str_clean(string);
+
+	TEST_ASSERT_EQUAL_STRING("HELLOWORLD", new);
+	TEST_ASSERT_EQUAL_STRING("ullll, lulll!", string);
+
+	str_repair(string, new);
+
+	TEST_ASSERT_EQUAL_STRING("Hello, wOrld!", string);
+
+	free(new);
 }
 
 void test_cipher_caesar_parse_key(void)
@@ -118,6 +148,8 @@ int main(void)
 	RUN_TEST(test_get_ngram_index);
 	RUN_TEST(test_load_quadgrams);
 	RUN_TEST(test_scorer_quadgram_score);
+	RUN_TEST(test_string_case_change);
+	RUN_TEST(test_string_schema);
 	RUN_TEST(test_cipher_caesar_parse_key);
 	RUN_TEST(test_cipher_caesar_solve);
 	RUN_TEST(test_cipher_caesar_crack);

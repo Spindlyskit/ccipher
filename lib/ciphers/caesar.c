@@ -6,10 +6,13 @@
 #include <math.h>
 
 #include "libccipher/scorer.h"
+#include "libccipher/string.h"
 
 bool caesar_parse_key(char *text, unsigned int *key)
 {
-	for (char *c = text; *c != '\0'; c++) {
+	char *c = text;
+
+	str_foreach(c) {
 		if (!isdigit(*c)) {
 			return false;
 		}
@@ -24,12 +27,10 @@ bool caesar_parse_key(char *text, unsigned int *key)
 	return true;
 }
 
-void caesar_solve(unsigned int key, char *text)
+void caesar_solve(unsigned int key, char *c)
 {
-	for (int i = 0; text[i] != '\0'; i++) {
-		char *c = text + i;
-
-		if (*c < 'A' || *c > 'Z') {
+	str_foreach(c) {
+		if (!isalpha(*c)) {
 			continue;
 		}
 		*c += key;
