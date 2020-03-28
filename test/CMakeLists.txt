@@ -6,7 +6,11 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
     GIT_TAG        v2.5.0
 )
-FetchContent_MakeAvailable(unity)
+FetchContent_GetProperties(unity)
+if(NOT unity_POPULATED)
+    FetchContent_Populate(unity)
+    add_subdirectory(${unity_SOURCE_DIR} ${unity_BINARY_DIR})
+endif()
 
 add_executable(ccipher-test ccipher.t.c)
 
