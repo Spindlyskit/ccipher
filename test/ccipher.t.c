@@ -65,7 +65,7 @@ void test_string_case_change(void)
 
 void test_string_schema(void)
 {
-	char string[] = "Hello, wOrld";
+	char string[] = "Hello, wOrld!";
 
 	char *new = str_clean(string);
 
