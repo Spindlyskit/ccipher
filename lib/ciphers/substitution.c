@@ -12,7 +12,6 @@
 #define INTERNAL_ITERATIONS 1000
 
 static void crack_single(struct text_scorer *scorer, char *ct, char best_key[26], float *best_score);
-static void substitution(char key[26], char *text, char *dest);
 
 // Crack a substitution cipher once - should be run multiple times to avoid local maximums
 static void crack_single(struct text_scorer *scorer, char *ct, char best_key[26], float *best_score)
@@ -29,7 +28,7 @@ static void crack_single(struct text_scorer *scorer, char *ct, char best_key[26]
 	}
 
 	strcpy(decoded, ct);
-	substitution(best_key, ct, decoded);
+	substitution_solve(best_key, ct, decoded);
 	*best_score = scorer_quadgram_score(scorer, decoded);
 	float current_score;
 
@@ -40,7 +39,7 @@ static void crack_single(struct text_scorer *scorer, char *ct, char best_key[26]
 		// Swap a random two characters
 		str_swap(current_key, rand() % 26, rand() % 26);
 
-		substitution(current_key, ct, decoded);
+		substitution_solve(current_key, ct, decoded);
 		current_score = scorer_quadgram_score(scorer, decoded);
 
 		if (current_score > *best_score) {
@@ -56,21 +55,17 @@ static void crack_single(struct text_scorer *scorer, char *ct, char best_key[26]
 	free(decoded);
 }
 
-// Perform a substitution, placing the result in dest
-// It is assumed that dest has space for the result
-static void substitution(char key[26], char *text, char *dest)
+void substitution_solve(char key[26], char *text, char *dest)
 {
-	for (int i = 0; text[i] != '\0'; i++) {
+	unsigned int i;
+	for (i = 0; text[i] != '\0'; i++) {
 		dest[i] = key[(int) (text[i] - 'A')];
 	}
+
+	dest[i] = '\0';
 }
 
-void substitution_solve(char key[26], char *text)
-{
-	substitution(key, text, text);
-}
-
-char *substitution_crack(struct text_scorer *scorer, char *text)
+char *substitution_crack(struct text_scorer *scorer, char *text, char *dest)
 {
 	char *best_key = malloc(27);
 	float best_score = -INFINITY;
@@ -87,6 +82,6 @@ char *substitution_crack(struct text_scorer *scorer, char *text)
 		}
 	}
 
-	substitution(best_key, text, text);
+	substitution_solve(best_key, text, dest);
 	return best_key;
 }

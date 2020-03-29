@@ -1,7 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unity.h>
-#include <string.h>
 #include <libccipher/scorer.h>
 #include <libccipher/logging.h>
 #include <libccipher/string.h>
@@ -143,9 +142,10 @@ void test_cipher_substitution_solve(void)
 {
 	char text[] = "HELLOWORLD";
 	char key[] = "ZGIMTQFCPXDBVUNRKEWHOSJYAL";
+	char dest[50];
 
-	substitution_solve(key, text);
-	TEST_ASSERT_EQUAL_STRING("CTBBNJNEBM", text);
+	substitution_solve(key, text, dest);
+	TEST_ASSERT_EQUAL_STRING("CTBBNJNEBM", dest);
 }
 
 void test_cipher_substitution_crack(void)
@@ -158,13 +158,14 @@ void test_cipher_substitution_crack(void)
 				  "XAANTQIFBFSFQUFCZFSBSCSBIMWHWLNKAXBISWGSTOXLXTSWLUQLXJBUUWLWISTBKOWLSWGSTOXLXTSWL"
 				  "BSJBUUWLFULQRTXWFXLTBKOWLBISOXSSOWTBKOWLXAKOXZWSBFIQSFBRKANSOWXAKOXZWSFOBUSWJBSBF"
 				  "TQRKAWSWANECRZAWJ";
+	char dest[sizeof(text)];
 
-	char *key = substitution_crack(&scorer, text);
+	char *key = substitution_crack(&scorer, text, dest);
 
 	TEST_ASSERT_EQUAL_STRING("THESIMPLESUBSTITUTIONCIPHERISACIPHERTHATHASBEENINUSEFORMANYHUNDREDSOFYEARSITBASIC"
 							 "ALLYCONSISTSOFSUBSTITUTINGEVERYPLAINTEXTCHARACTERFORADIFFERENTCIPHERTEXTCHARACTER"
 							 "ITDIFFERSFROMCAESARCIPHERINTHATTHECIPHERALPHABETISNOTSIMPLYTHEALPHABETSHIFTEDITIS"
-							 "COMPLETELYJUMBLED", text);
+							 "COMPLETELYJUMBLED", dest);
 
 	TEST_ASSERT_EQUAL_STRING("LIUZJSXVNDPRGYHQOMTCFKEAWB", key);
 
@@ -174,6 +175,7 @@ void test_cipher_substitution_crack(void)
 int main(void)
 {
 	srand(5);
+
 	UNITY_BEGIN();
 	RUN_TEST(test_get_ngram_index);
 	RUN_TEST(test_load_quadgrams);
