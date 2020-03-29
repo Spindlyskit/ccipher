@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unity.h>
 #include <libccipher/scorer.h>
-#include <libccipher/logging.h>
 #include <libccipher/string.h>
 #include <libccipher/ciphers/caesar.h>
 #include <libccipher/ciphers/substitution.h>

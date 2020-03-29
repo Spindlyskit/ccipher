@@ -10,7 +10,7 @@
 
 bool caesar_parse_key(const char *text, unsigned int *key)
 {
-	char *c = text;
+	const char *c = text;
 
 	str_foreach(c) {
 		if (!isdigit(*c)) {
@@ -27,7 +27,7 @@ bool caesar_parse_key(const char *text, unsigned int *key)
 	return true;
 }
 
-void caesar_solve(unsigned int key, char *text, char *dest)
+void caesar_solve(unsigned int key, const char *text, char *dest)
 {
 	int i;
 	for (i = 0; text[i] != '\0'; i++) {
@@ -41,7 +41,7 @@ void caesar_solve(unsigned int key, char *text, char *dest)
 	dest[i] = '\0';
 }
 
-unsigned int caesar_crack(struct text_scorer *scorer, char *text, char *dest)
+unsigned int caesar_crack(struct text_scorer *scorer, const char *text, char *dest)
 {
 	unsigned int best_key = 0;
 	float best_score = scorer_quadgram_score(scorer, text);

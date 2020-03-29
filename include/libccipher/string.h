@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 // Loop over each character of a string
-#define str_foreach(x) for (; *x != '\0'; x++)
+#define str_foreach(x) for (; *(x) != '\0'; (x)++)
 
 // The uppercase alphabet
 extern const char ALPHABET[26];

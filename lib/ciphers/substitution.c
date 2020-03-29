@@ -12,10 +12,10 @@
 #define MAX_ITERATIONS 5
 #define INTERNAL_ITERATIONS 1000
 
-static void crack_single(struct text_scorer *scorer, char *ct, char best_key[26], float *best_score);
+static void crack_single(struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score);
 
 // Crack a substitution cipher once - should be run multiple times to avoid local maximums
-static void crack_single(struct text_scorer *scorer, char *ct, char best_key[26], float *best_score)
+static void crack_single(struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score)
 {
 	strcpy(best_key, ALPHABET);
 	str_shuffle(best_key);
@@ -83,17 +83,17 @@ bool substitution_parse_key(const char *text, char key[26])
 	return text[i] == '\0';
 }
 
-void substitution_solve(char key[26], char *text, char *dest)
+void substitution_solve(const char key[26], const char *text, char *dest)
 {
 	unsigned int i;
 	for (i = 0; text[i] != '\0'; i++) {
-		dest[i] = key[(int) (text[i] - 'A')];
+		dest[i] = key[text[i] - 'A'];
 	}
 
 	dest[i] = '\0';
 }
 
-char *substitution_crack(struct text_scorer *scorer, char *text, char *dest)
+char *substitution_crack(struct text_scorer *scorer, const char *text, char *dest)
 {
 	char *best_key = malloc(27);
 	float best_score = -INFINITY;
