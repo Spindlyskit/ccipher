@@ -5,6 +5,7 @@
 #include <string.h>
 
 const char ALPHABET[26] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const char ALPHABET_STRING[27] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 void str_upper(char *string)
 {

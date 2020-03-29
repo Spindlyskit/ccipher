@@ -5,6 +5,7 @@
 #include <math.h>
 #include <string.h>
 
+#include "libccipher/ccipher.h"
 #include "libccipher/logging.h"
 #include "libccipher/scorer.h"
 #include "libccipher/string.h"
@@ -12,10 +13,10 @@
 #define MAX_ITERATIONS 5
 #define INTERNAL_ITERATIONS 1000
 
-static void crack_single(struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score);
+static void crack_single(const struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score);
 
 // Crack a substitution cipher once - should be run multiple times to avoid local maximums
-static void crack_single(struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score)
+static void crack_single(const struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score)
 {
 	strcpy(best_key, ALPHABET);
 	str_shuffle(best_key);
@@ -56,6 +57,25 @@ static void crack_single(struct text_scorer *scorer, const char *ct, char best_k
 	free(decoded);
 }
 
+void substitution_with_data(struct cipher_data *data)
+{
+	if (data->use_autocrack) {
+		 char *used_key = substitution_crack(data->scorer, data->ct, data->result);
+		data->success = true;
+		// Specify the length because substitution keys are not null terminated
+		sprintf(data->key, "%.*s", 26, used_key);
+		return;
+	}
+
+	char key[26];
+	if (!substitution_parse_key(data->key, key)) {
+		return;
+	}
+
+	substitution_solve(key, data->ct, data->result);
+	data->success = true;
+}
+
 bool substitution_parse_key(const char *text, char key[26])
 {
 	unsigned int i;
@@ -93,7 +113,7 @@ void substitution_solve(const char key[26], const char *text, char *dest)
 	dest[i] = '\0';
 }
 
-char *substitution_crack(struct text_scorer *scorer, const char *text, char *dest)
+char *substitution_crack(const struct text_scorer *scorer, const char *text, char *dest)
 {
 	char *best_key = malloc(27);
 	float best_score = -INFINITY;

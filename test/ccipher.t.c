@@ -7,7 +7,9 @@
 #include <libccipher/ciphers/caesar.h>
 #include <libccipher/ciphers/substitution.h>
 
-void setUp() {}
+void setUp() {
+	srand(5);
+}
 void tearDown() {}
 
 void test_get_ngram_index(void)
@@ -182,6 +184,59 @@ void test_cipher_caesar_with_data(void)
 	TEST_ASSERT_EQUAL_STRING("THISISACAESARCIPHER", data2.result);
 }
 
+void test_cipher_substitution_with_data(void)
+{
+	// Load the quadgram data
+	struct text_scorer scorer;
+	scorer_load_data(&scorer, fopen("./english_quadgrams.txt", "r"));
+
+	// Test autocrack
+
+	char text[] = "SOWFBRKAWFCZFSBSCSBQITBKOWLBFXTBKOWLSOXSOXFZWWIBICFWUQLRXINOCIJLWJFQUNWXLFBSZXFBT"
+				  "XAANTQIFBFSFQUFCZFSBSCSBIMWHWLNKAXBISWGSTOXLXTSWLUQLXJBUUWLWISTBKOWLSWGSTOXLXTSWL"
+				  "BSJBUUWLFULQRTXWFXLTBKOWLBISOXSSOWTBKOWLXAKOXZWSBFIQSFBRKANSOWXAKOXZWSFOBUSWJBSBF"
+				  "TQRKAWSWANECRZAWJ";
+	char result[sizeof(text)];
+	char key[27];
+
+	struct cipher_data data = {
+			.ct = text,
+			.key = key,
+			.use_autocrack = true,
+			.scorer = &scorer,
+			.result = result,
+	};
+
+	substitution_with_data(&data);
+
+	TEST_ASSERT_EQUAL_INT(true, data.success);
+	TEST_ASSERT_EQUAL_STRING("LIUZJSXVNDPRGYHQOMTCFKEAWB", data.key);
+	TEST_ASSERT_EQUAL_STRING("THESIMPLESUBSTITUTIONCIPHERISACIPHERTHATHASBEENINUSEFORMANYHUNDREDSOFYEARSITBASIC"
+							 "ALLYCONSISTSOFSUBSTITUTINGEVERYPLAINTEXTCHARACTERFORADIFFERENTCIPHERTEXTCHARACTER"
+							 "ITDIFFERSFROMCAESARCIPHERINTHATTHECIPHERALPHABETISNOTSIMPLYTHEALPHABETSHIFTEDITIS"
+							 "COMPLETELYJUMBLED", data.result);
+
+	// Test solve with key
+
+	char result2[sizeof(text)];
+
+	struct cipher_data data2 = {
+			.ct = text,
+			.key = "LIUZJSXVNDPRGYHQOMTCFKEAWB",
+			.use_autocrack = false,
+			.scorer = &scorer,
+			.result = result2,
+	};
+
+	substitution_with_data(&data2);
+
+	TEST_ASSERT_EQUAL_INT(true, data2.success);
+	TEST_ASSERT_EQUAL_STRING("THESIMPLESUBSTITUTIONCIPHERISACIPHERTHATHASBEENINUSEFORMANYHUNDREDSOFYEARSITBASIC"
+							 "ALLYCONSISTSOFSUBSTITUTINGEVERYPLAINTEXTCHARACTERFORADIFFERENTCIPHERTEXTCHARACTER"
+							 "ITDIFFERSFROMCAESARCIPHERINTHATTHECIPHERALPHABETISNOTSIMPLYTHEALPHABETSHIFTEDITIS"
+							 "COMPLETELYJUMBLED", data2.result);
+}
+
 void test_cipher_substitution_parse_key(void)
 {
 	char text[] = "HLWJNOKMPVEUDFZTBGACRYIQXS";
@@ -247,8 +302,6 @@ void test_cipher_substitution_crack(void)
 
 int main(void)
 {
-	srand(5);
-
 	UNITY_BEGIN();
 	RUN_TEST(test_get_ngram_index);
 	RUN_TEST(test_load_quadgrams);
@@ -259,6 +312,7 @@ int main(void)
 	RUN_TEST(test_cipher_caesar_parse_key);
 	RUN_TEST(test_cipher_caesar_solve);
 	RUN_TEST(test_cipher_caesar_crack);
+	RUN_TEST(test_cipher_substitution_with_data);
 	RUN_TEST(test_cipher_substitution_parse_key);
 	RUN_TEST(test_cipher_substitution_solve);
 	RUN_TEST(test_cipher_substitution_crack);

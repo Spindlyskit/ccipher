@@ -6,8 +6,11 @@
 // Loop over each character of a string
 #define str_foreach(x) for (; *(x) != '\0'; (x)++)
 
-// The uppercase alphabet
+// The uppercase alphabet, NOT NULL TERMINATED!
 extern const char ALPHABET[26];
+
+// The same but null terminated
+extern const char ALPHABET_STRING[27];
 
 // Convert a string to uppercase in place
 void str_upper(char *string);
