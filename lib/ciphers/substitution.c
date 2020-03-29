@@ -13,6 +13,9 @@
 #define MAX_ITERATIONS 5
 #define INTERNAL_ITERATIONS 1000
 
+// Note that, while the key string returned from substitution_crack is null terminated, the keys used internally are not
+// This means you should not use methods like printf("%s", string); as this could segfault
+
 static void crack_single(const struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score);
 
 // Crack a substitution cipher once - should be run multiple times to avoid local maximums
@@ -62,8 +65,7 @@ void substitution_with_data(struct cipher_data *data)
 	if (data->use_autocrack) {
 		 char *used_key = substitution_crack(data->scorer, data->ct, data->result);
 		data->success = true;
-		// Specify the length because substitution keys are not null terminated
-		sprintf(data->key, "%.*s", 26, used_key);
+		sprintf(data->key, "%s", used_key);
 		return;
 	}
 
