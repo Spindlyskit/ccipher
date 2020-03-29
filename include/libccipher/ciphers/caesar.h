@@ -5,7 +5,7 @@
 #include <libccipher/scorer.h>
 
 // Parse a caesar key from a string
-bool caesar_parse_key(char *text, unsigned int *key);
+bool caesar_parse_key(const char *text, unsigned int *key);
 
 // Solve a caesar cipher with the given key
 void caesar_solve(unsigned int key, char *text, char *dest);

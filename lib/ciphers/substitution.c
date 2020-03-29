@@ -1,8 +1,9 @@
 #include "libccipher/ciphers/substitution.h"
 
 #include <stdlib.h>
-#include <string.h>
+#include <ctype.h>
 #include <math.h>
+#include <string.h>
 
 #include "libccipher/logging.h"
 #include "libccipher/scorer.h"
@@ -53,6 +54,33 @@ static void crack_single(struct text_scorer *scorer, char *ct, char best_key[26]
 	}
 
 	free(decoded);
+}
+
+bool substitution_parse_key(const char *text, char key[26])
+{
+	unsigned int i;
+
+	// Check the length is 26, and each letter appears once
+	for (i = 0; i < 26; i++) {
+		// Check the character is a letter
+		// This will also fail if the character is '\0' so we won't segfault
+		if (!isalpha(text[i])) {
+			return false;
+		}
+
+		key[i] = toupper(text[i]);
+		char c = key[i];
+
+		// Check for duplicates
+		for (unsigned int j = 0; j < i; j++) {
+			if (key[j] == c) {
+				return false;
+			}
+		}
+	}
+
+	// Ensure the string is only 26 long
+	return text[i] == '\0';
 }
 
 void substitution_solve(char key[26], char *text, char *dest)

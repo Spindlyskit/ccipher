@@ -5,7 +5,7 @@
 #include <libccipher/scorer.h>
 
 // Parse a substitution key from a string
-bool substitution_parse_key(char *text, char key[26]);
+bool substitution_parse_key(const char *text, char key[26]);
 
 // Solve a substitution cipher with the given key
 void substitution_solve(char *key, char *text, char *dest);

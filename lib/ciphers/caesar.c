@@ -8,7 +8,7 @@
 #include "libccipher/scorer.h"
 #include "libccipher/string.h"
 
-bool caesar_parse_key(char *text, unsigned int *key)
+bool caesar_parse_key(const char *text, unsigned int *key)
 {
 	char *c = text;
 

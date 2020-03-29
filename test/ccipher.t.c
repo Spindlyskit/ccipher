@@ -138,6 +138,35 @@ void test_cipher_caesar_crack(void)
 	TEST_ASSERT_EQUAL_UINT(5, used_key);
 }
 
+void test_cipher_substitution_parse_key(void)
+{
+	char text[] = "HLWJNOKMPVEUDFZTBGACRYIQXS";
+	char text2[] = "HLWJNOKMPVEUDFZTBGACRYIQXSPPAS";
+	char text3[] = "ABCBEFGHIJKLMNOPQRSTUVWXYZ";
+	char text4[] = "ABCDEFG";
+	char text5[] = "pemwgifcohdjvqrsyxlzbtunak";
+
+	char key[26];
+	bool success;
+
+	success = substitution_parse_key(text, key);
+	TEST_ASSERT_EQUAL_INT(true, success);
+	TEST_ASSERT_EQUAL_CHAR_ARRAY("HLWJNOKMPVEUDFZTBGACRYIQXS", key, 26);
+
+	success = substitution_parse_key(text2, key);
+	TEST_ASSERT_EQUAL_INT(false, success);
+
+	success = substitution_parse_key(text3, key);
+	TEST_ASSERT_EQUAL_INT(false, success);
+
+	success = substitution_parse_key(text4, key);
+	TEST_ASSERT_EQUAL_INT(false, success);
+
+	success = substitution_parse_key(text5, key);
+	TEST_ASSERT_EQUAL_CHAR_ARRAY("PEMWGIFCOHDJVQRSYXLZBTUNAK", key, 26);
+	TEST_ASSERT_EQUAL_INT(true, success);
+}
+
 void test_cipher_substitution_solve(void)
 {
 	char text[] = "HELLOWORLD";
@@ -185,6 +214,7 @@ int main(void)
 	RUN_TEST(test_cipher_caesar_parse_key);
 	RUN_TEST(test_cipher_caesar_solve);
 	RUN_TEST(test_cipher_caesar_crack);
+	RUN_TEST(test_cipher_substitution_parse_key);
 	RUN_TEST(test_cipher_substitution_solve);
 	RUN_TEST(test_cipher_substitution_crack);
 	return UNITY_END();
