@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <string.h>
 
+const char ALPHABET[26] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 void str_upper(char *string)
 {
 	str_foreach(string) {
@@ -18,10 +20,26 @@ void str_lower(char *string)
 	}
 }
 
+void str_shuffle(char *string)
+{
+	int len = strlen(string);
+	char swap;
+
+	for (int i = 0; i < len; i++) {
+		int random = rand() % len;
+		swap = string[random];
+		string[random] = string[i];
+		string[i] = swap;
+	}
+}
+
 char *str_clean(char *string)
 {
 	// Create the new string and a running total of its length
 	char *new = malloc(strlen(string) + 1);
+	if (!new) {
+		return NULL;
+	}
 	int nl = 0;
 
 	// Push alphabetic characters to the new string, replacing all uppercase characters with a "u" and all lowercase

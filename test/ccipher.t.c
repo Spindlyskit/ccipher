@@ -3,6 +3,7 @@
 #include <unity.h>
 #include <string.h>
 #include <libccipher/scorer.h>
+#include <libccipher/logging.h>
 #include <libccipher/string.h>
 #include <libccipher/ciphers/caesar.h>
 #include <libccipher/ciphers/substitution.h>
@@ -68,6 +69,9 @@ void test_string_schema(void)
 	char string[] = "Hello, wOrld!";
 
 	char *new = str_clean(string);
+	if (!new) {
+		TEST_FAIL_MESSAGE("Malloc failed for str_clean");
+	}
 
 	TEST_ASSERT_EQUAL_STRING("HELLOWORLD", new);
 	TEST_ASSERT_EQUAL_STRING("ullll, lulll!", string);
