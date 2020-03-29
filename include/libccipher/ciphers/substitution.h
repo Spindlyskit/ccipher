@@ -9,7 +9,7 @@
 void substitution_with_data(struct cipher_data *data);
 
 // Parse a substitution key from a string
-bool substitution_parse_key(const char *text, char key[26]);
+bool substitution_parse_key(const char *text, char key[27]);
 
 // Solve a substitution cipher with the given key
 void substitution_solve(const char *key, const char *text, char *dest);

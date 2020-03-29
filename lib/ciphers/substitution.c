@@ -13,13 +13,10 @@
 #define MAX_ITERATIONS 5
 #define INTERNAL_ITERATIONS 1000
 
-// Note that, while the key string returned from substitution_crack is null terminated, the keys used internally are not
-// This means you should not use methods like printf("%s", string); as this could segfault
-
-static void crack_single(const struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score);
+static void crack_single(const struct text_scorer *scorer, const char *ct, char best_key[27], float *best_score);
 
 // Crack a substitution cipher once - should be run multiple times to avoid local maximums
-static void crack_single(const struct text_scorer *scorer, const char *ct, char best_key[26], float *best_score)
+static void crack_single(const struct text_scorer *scorer, const char *ct, char best_key[27], float *best_score)
 {
 	strcpy(best_key, ALPHABET);
 	str_shuffle(best_key);
@@ -37,7 +34,7 @@ static void crack_single(const struct text_scorer *scorer, const char *ct, char 
 	*best_score = scorer_quadgram_score(scorer, decoded);
 	float current_score;
 
-	char current_key[26];
+	char current_key[27];
 	strcpy(current_key, best_key);
 
 	for (int i = 0; i < INTERNAL_ITERATIONS; i++) {
@@ -69,7 +66,7 @@ void substitution_with_data(struct cipher_data *data)
 		return;
 	}
 
-	char key[26];
+	char key[27];
 	if (!substitution_parse_key(data->key, key)) {
 		return;
 	}
@@ -78,7 +75,7 @@ void substitution_with_data(struct cipher_data *data)
 	data->success = true;
 }
 
-bool substitution_parse_key(const char *text, char key[26])
+bool substitution_parse_key(const char *text, char key[27])
 {
 	unsigned int i;
 
@@ -101,11 +98,13 @@ bool substitution_parse_key(const char *text, char key[26])
 		}
 	}
 
+	key[26] = '\0';
+
 	// Ensure the string is only 26 long
 	return text[i] == '\0';
 }
 
-void substitution_solve(const char key[26], const char *text, char *dest)
+void substitution_solve(const char key[27], const char *text, char *dest)
 {
 	unsigned int i;
 	for (i = 0; text[i] != '\0'; i++) {
@@ -121,7 +120,7 @@ char *substitution_crack(const struct text_scorer *scorer, const char *text, cha
 	float best_score = -INFINITY;
 
 	for (int i = 0; i < MAX_ITERATIONS; i++) {
-		char current_key[26];
+		char current_key[27];
 		float current_score;
 
 		crack_single(scorer, text, current_key, &current_score);

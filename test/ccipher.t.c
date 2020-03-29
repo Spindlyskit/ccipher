@@ -245,12 +245,12 @@ void test_cipher_substitution_parse_key(void)
 	char text4[] = "ABCDEFG";
 	char text5[] = "pemwgifcohdjvqrsyxlzbtunak";
 
-	char key[26];
+	char key[27];
 	bool success;
 
 	success = substitution_parse_key(text, key);
 	TEST_ASSERT_EQUAL_INT(true, success);
-	TEST_ASSERT_EQUAL_CHAR_ARRAY("HLWJNOKMPVEUDFZTBGACRYIQXS", key, 26);
+	TEST_ASSERT_EQUAL_STRING("HLWJNOKMPVEUDFZTBGACRYIQXS", key);
 
 	success = substitution_parse_key(text2, key);
 	TEST_ASSERT_EQUAL_INT(false, success);
@@ -262,7 +262,7 @@ void test_cipher_substitution_parse_key(void)
 	TEST_ASSERT_EQUAL_INT(false, success);
 
 	success = substitution_parse_key(text5, key);
-	TEST_ASSERT_EQUAL_CHAR_ARRAY("PEMWGIFCOHDJVQRSYXLZBTUNAK", key, 26);
+	TEST_ASSERT_EQUAL_STRING("PEMWGIFCOHDJVQRSYXLZBTUNAK", key);
 	TEST_ASSERT_EQUAL_INT(true, success);
 }
 
