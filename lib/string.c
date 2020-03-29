@@ -33,6 +33,18 @@ void str_shuffle(char *string)
 	}
 }
 
+void str_swap(char *string, size_t c1, size_t c2)
+{
+	// Don't do anything if the indices are the same
+	if (c1 == c2) {
+		return;
+	}
+
+	char swap = string[c1];
+	string[c1] = string[c2];
+	string[c2] = swap;
+}
+
 char *str_clean(char *string)
 {
 	// Create the new string and a running total of its length

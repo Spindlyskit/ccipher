@@ -146,8 +146,32 @@ void test_cipher_substitution_solve(void)
 	TEST_ASSERT_EQUAL_STRING("CTBBNJNEBM", text);
 }
 
+void test_cipher_substitution_crack(void)
+{
+	// Load the test data
+	struct text_scorer scorer;
+	scorer_load_data(&scorer, fopen("./english_quadgrams.txt", "r"));
+
+	char text[] = "SOWFBRKAWFCZFSBSCSBQITBKOWLBFXTBKOWLSOXSOXFZWWIBICFWUQLRXINOCIJLWJFQUNWXLFBSZXFBT"
+				  "XAANTQIFBFSFQUFCZFSBSCSBIMWHWLNKAXBISWGSTOXLXTSWLUQLXJBUUWLWISTBKOWLSWGSTOXLXTSWL"
+				  "BSJBUUWLFULQRTXWFXLTBKOWLBISOXSSOWTBKOWLXAKOXZWSBFIQSFBRKANSOWXAKOXZWSFOBUSWJBSBF"
+				  "TQRKAWSWANECRZAWJ";
+
+	char *key = substitution_crack(&scorer, text);
+
+	TEST_ASSERT_EQUAL_STRING("THESIMPLESUBSTITUTIONCIPHERISACIPHERTHATHASBEENINUSEFORMANYHUNDREDSOFYEARSITBASIC"
+							 "ALLYCONSISTSOFSUBSTITUTINGEVERYPLAINTEXTCHARACTERFORADIFFERENTCIPHERTEXTCHARACTER"
+							 "ITDIFFERSFROMCAESARCIPHERINTHATTHECIPHERALPHABETISNOTSIMPLYTHEALPHABETSHIFTEDITIS"
+							 "COMPLETELYJUMBLED", text);
+
+	TEST_ASSERT_EQUAL_STRING("LIUZJSXVNDPRGYHQOMTCFKEAWB", key);
+
+	free(key);
+}
+
 int main(void)
 {
+	srand(5);
 	UNITY_BEGIN();
 	RUN_TEST(test_get_ngram_index);
 	RUN_TEST(test_load_quadgrams);
@@ -158,5 +182,6 @@ int main(void)
 	RUN_TEST(test_cipher_caesar_solve);
 	RUN_TEST(test_cipher_caesar_crack);
 	RUN_TEST(test_cipher_substitution_solve);
+	RUN_TEST(test_cipher_substitution_crack);
 	return UNITY_END();
 }
