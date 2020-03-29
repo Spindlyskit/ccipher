@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
+#include <string.h>
 
 #include "libccipher/scorer.h"
 #include "libccipher/string.h"
@@ -27,35 +28,40 @@ bool caesar_parse_key(char *text, unsigned int *key)
 	return true;
 }
 
-void caesar_solve(unsigned int key, char *c)
+void caesar_solve(unsigned int key, char *text, char *dest)
 {
-	str_foreach(c) {
-		if (!isalpha(*c)) {
-			continue;
-		}
-		*c += key;
+	int i;
+	for (i = 0; text[i] != '\0'; i++) {
+		dest[i] = text[i] + key;
 
-		if (*c > 'Z') {
-			*c -= 26;
+		if (dest[i] > 'Z') {
+			dest[i] -= 26;
 		}
 	}
+
+	dest[i] = '\0';
 }
 
-unsigned int caesar_crack(struct text_scorer *scorer, char *text)
+unsigned int caesar_crack(struct text_scorer *scorer, char *text, char *dest)
 {
-	unsigned int best_key;
-	float best_score = -INFINITY;
+	unsigned int best_key = 0;
+	float best_score = scorer_quadgram_score(scorer, text);
 
-	for (unsigned int i = 1; i <= 26; i++) {
-		caesar_solve(1, text);
-		float score = scorer_quadgram_score(scorer, text);
+	// Copy the cipher text into the destination
+	strcpy(dest, text);
+
+	for (unsigned int key = 1; key < 26; key++) {
+		// Shift the text by one
+		caesar_solve(1, dest, dest);
+
+		float score = scorer_quadgram_score(scorer, dest);
 
 		if (score > best_score) {
-			best_key = i;
+			best_key = key;
 			best_score = score;
 		}
 	}
 
-	caesar_solve(best_key, text);
+	caesar_solve(best_key, text, dest);
 	return best_key;
 }

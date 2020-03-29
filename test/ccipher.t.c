@@ -109,9 +109,10 @@ void test_cipher_caesar_parse_key(void)
 void test_cipher_caesar_solve(void)
 {
 	char text[] = "AOPZPZHJHLZHYJPWOLY";
-	caesar_solve(19, text);
+	char dest[20];
+	caesar_solve(19, text, dest);
 
-	TEST_ASSERT_EQUAL_STRING("THISISACAESARCIPHER", text);
+	TEST_ASSERT_EQUAL_STRING("THISISACAESARCIPHER", dest);
 }
 
 void test_cipher_caesar_crack(void)
@@ -121,19 +122,20 @@ void test_cipher_caesar_crack(void)
 	scorer_load_data(&scorer, fopen("./english_quadgrams.txt", "r"));
 
 	char text[] = "AOPZPZHJHLZHYJPWOLY";
-	unsigned int used_key = caesar_crack(&scorer, text);
+	char decoded[500];
+	unsigned int used_key = caesar_crack(&scorer, text, decoded);
 
-	TEST_ASSERT_EQUAL_STRING("THISISACAESARCIPHER", text);
+	TEST_ASSERT_EQUAL_STRING("THISISACAESARCIPHER", decoded);
 	TEST_ASSERT_EQUAL_UINT(19, used_key);
 
 	char text2[] = "HZOCJYDIRCDXCZVXCGZOOZMDIOCZKGVDIOZSODNMZKGVXZYWTVGZOOZMNJHZADSZYIPHWZMJA"
 		"KJNDODJINYJRIOCZVGKCVWZOOCZHZOCJYDNIVHZYVAOZMEPGDPNXVZNVMRCJPNZYDODICDNKMDQVOZXJMMZNKJIYZIXZ";
 
-	used_key = caesar_crack(&scorer, text2);
+	used_key = caesar_crack(&scorer, text2, decoded);
 
 	TEST_ASSERT_EQUAL_STRING("METHODINWHICHEACHLETTERINTHEPLAINTEXTISREPLACEDBYALETTERSOMEFIXEDNUMBEROF"
 		"POSITIONSDOWNTHEALPHABETTHEMETHODISNAMEDAFTERJULIUSCAESARWHOUSEDITINHISPRIVATECORRESPONDENCE",
-		text2);
+		decoded);
 	TEST_ASSERT_EQUAL_UINT(5, used_key);
 }
 
