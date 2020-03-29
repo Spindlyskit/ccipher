@@ -2,11 +2,30 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 
 #include "libccipher/scorer.h"
 #include "libccipher/string.h"
+
+void caesar_with_data(struct cipher_data *data)
+{
+	if (data->use_autocrack) {
+		unsigned int used_key = caesar_crack(data->scorer, data->ct, data->result);
+		data->success = true;
+		sprintf(data->key, "%u", used_key);
+		return;
+	}
+
+	unsigned int key;
+	if (!caesar_parse_key(data->key, &key)) {
+		return;
+	}
+
+	caesar_solve(key, data->ct, data->result);
+	data->success = true;
+}
 
 bool caesar_parse_key(const char *text, unsigned int *key)
 {
@@ -41,7 +60,7 @@ void caesar_solve(unsigned int key, const char *text, char *dest)
 	dest[i] = '\0';
 }
 
-unsigned int caesar_crack(struct text_scorer *scorer, const char *text, char *dest)
+unsigned int caesar_crack(const struct text_scorer *scorer, const char *text, char *dest)
 {
 	unsigned int best_key = 0;
 	float best_score = scorer_quadgram_score(scorer, text);

@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unity.h>
+#include <libccipher/ccipher.h>
 #include <libccipher/scorer.h>
 #include <libccipher/string.h>
 #include <libccipher/ciphers/caesar.h>
@@ -137,6 +138,50 @@ void test_cipher_caesar_crack(void)
 	TEST_ASSERT_EQUAL_UINT(5, used_key);
 }
 
+void test_cipher_caesar_with_data(void)
+{
+	// Load the quadgram data
+	struct text_scorer scorer;
+	scorer_load_data(&scorer, fopen("./english_quadgrams.txt", "r"));
+
+	// Test autocrack
+
+	char text[] = "AOPZPZHJHLZHYJPWOLY";
+	char result[sizeof(text)];
+	char key[8];
+
+	struct cipher_data data = {
+		.ct = text,
+		.key = key,
+		.use_autocrack = true,
+		.scorer = &scorer,
+		.result = result,
+	};
+
+	caesar_with_data(&data);
+
+	TEST_ASSERT_EQUAL_INT(true, data.success);
+	TEST_ASSERT_EQUAL_STRING("19", data.key);
+	TEST_ASSERT_EQUAL_STRING("THISISACAESARCIPHER", data.result);
+
+	// Test solve with key
+
+	char result2[sizeof(text)];
+
+	struct cipher_data data2 = {
+			.ct = text,
+			.key = "19",
+			.use_autocrack = false,
+			.scorer = &scorer,
+			.result = result2,
+	};
+
+	caesar_with_data(&data2);
+
+	TEST_ASSERT_EQUAL_INT(true, data2.success);
+	TEST_ASSERT_EQUAL_STRING("THISISACAESARCIPHER", data2.result);
+}
+
 void test_cipher_substitution_parse_key(void)
 {
 	char text[] = "HLWJNOKMPVEUDFZTBGACRYIQXS";
@@ -210,6 +255,7 @@ int main(void)
 	RUN_TEST(test_scorer_quadgram_score);
 	RUN_TEST(test_string_case_change);
 	RUN_TEST(test_string_schema);
+	RUN_TEST(test_cipher_caesar_with_data);
 	RUN_TEST(test_cipher_caesar_parse_key);
 	RUN_TEST(test_cipher_caesar_solve);
 	RUN_TEST(test_cipher_caesar_crack);

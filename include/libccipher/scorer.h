@@ -17,6 +17,6 @@ int get_ngram_index(const char *ngram, int length);
 void scorer_load_data(struct text_scorer *scorer, FILE *quadgram_file);
 
 // Score text based on quadgrams
-float scorer_quadgram_score(struct text_scorer *scorer, const char *text);
+float scorer_quadgram_score(const struct text_scorer *scorer, const char *text);
 
 #endif //CCIPHER_SCORER_H

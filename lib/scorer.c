@@ -39,7 +39,7 @@ void scorer_load_data(struct text_scorer *scorer, FILE *quadgram_file)
 	}
 }
 
-float scorer_quadgram_score(struct text_scorer *scorer, const char *text)
+float scorer_quadgram_score(const struct text_scorer *scorer, const char *text)
 {
 	unsigned long len = strlen(text);
 	if (len < 4) {
