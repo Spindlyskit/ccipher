@@ -60,9 +60,10 @@ static void crack_single(const struct text_scorer *scorer, const char *ct, char 
 void substitution_with_data(struct cipher_data *data)
 {
 	if (data->use_autocrack) {
-		 char *used_key = substitution_crack(data->scorer, data->ct, data->result);
+		char *used_key = substitution_crack(data->scorer, data->ct, data->result);
 		data->success = true;
 		sprintf(data->key, "%s", used_key);
+		free(used_key);
 		return;
 	}
 
