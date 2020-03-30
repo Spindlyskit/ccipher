@@ -2,6 +2,7 @@
 #define CCIPHER_SUBSTITUTION_H
 
 #include <stdbool.h>
+
 #include "libccipher/ccipher.h"
 #include "libccipher/scorer.h"
 

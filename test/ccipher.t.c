@@ -6,6 +6,7 @@
 #include <libccipher/string.h>
 #include <libccipher/ciphers/caesar.h>
 #include <libccipher/ciphers/substitution.h>
+#include <libccipher/ciphers/vigenere.h>
 
 void setUp() {
 	srand(5);
@@ -300,6 +301,17 @@ void test_cipher_substitution_crack(void)
 	free(key);
 }
 
+void test_cipher_vigenere_solve(void)
+{
+	char text[] = "ISWXVIBJEXIGGBOCEWKBJEVIGGQS";
+	char key[] = "FORTIFICATION";
+	char dest[sizeof(text)];
+
+	vigenere_solve(key, text, dest);
+
+	TEST_ASSERT_EQUAL_STRING("DEFENDTHEEASTWALLOFTHECASTLE", dest);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -316,5 +328,6 @@ int main(void)
 	RUN_TEST(test_cipher_substitution_parse_key);
 	RUN_TEST(test_cipher_substitution_solve);
 	RUN_TEST(test_cipher_substitution_crack);
+	RUN_TEST(test_cipher_vigenere_solve);
 	return UNITY_END();
 }
