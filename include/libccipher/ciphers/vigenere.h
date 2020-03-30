@@ -13,7 +13,7 @@ void vigenere_with_data(struct cipher_data *data);
 bool vigenere_parse_key(const char *text, char *key);
 
 // Solve a vigenere cipher with the given key
-void vigenere_solve(char *key, const char *text, char *dest);
+void vigenere_solve(const char *key, const char *text, char *dest);
 
 // Automatically crack a vigenere cipher, returns the used key
 char *vigenere_crack(const struct text_scorer *scorer, const char *text, char *dest);
